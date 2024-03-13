@@ -7,15 +7,25 @@
 
 import SwiftUI
 
+struct BlueTitle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .foregroundStyle(.blue)
+
+    }
+}
+
+extension View {
+    func blueTitleStyle() -> some View {
+        modifier(BlueTitle())
+    }
+}
+
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        Text("Hello Title")
+            .blueTitleStyle()
     }
 }
 
