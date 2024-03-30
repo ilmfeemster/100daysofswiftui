@@ -14,11 +14,12 @@ struct ContentView: View {
     @State private var errorTitle = ""
     @State private var errorMessage = ""
     @State private var showingError = false
+    @State private var score = 0
     
     var body: some View {
         NavigationStack {
             List {
-                Section {
+                Section("Score: \(score)") {
                     TextField("Enter your word", text: $newWord)
                         .textInputAutocapitalization(.never)
                 }
@@ -38,6 +39,11 @@ struct ContentView: View {
             .alert(errorTitle, isPresented: $showingError){ } message: {
                 Text(errorMessage)
             }
+            .toolbar(content: {
+                Button(action: newGame, label: {
+                    Text("New Word")
+                })
+            })
         }
     }
     func addNewWord() {
@@ -61,9 +67,20 @@ struct ContentView: View {
             wordError(title: "Word not recognized", message: "You can't just make them up, you know!")
             return
         }
+        
+        guard isReal(word: answer) else {
+            wordError(title: "Word is too short", message: "Valid words must be at least 3 letters long.")
+            return
+        }
+        
+        guard isNotStartingWord(word: answer) else {
+            wordError(title: "Sorry", message: "You cannot use the starting word :(")
+            return
+        }
 
         withAnimation {
             usedWords.insert(answer, at: 0)
+            score += (1 + newWord.count)
         }
         newWord = ""
     }
@@ -84,7 +101,7 @@ struct ContentView: View {
             }
         }
 
-        // If were are *here* then there was a problem – trigger a crash and report the error
+        // If we are *here* then there was a problem – trigger a crash and report the error
         fatalError("Could not load start.txt from bundle.")
     }
     
@@ -114,10 +131,24 @@ struct ContentView: View {
         return misspelledRange.location == NSNotFound
     }
     
+    func isLongEnough(word: String) -> Bool {
+        return word.count >= 3
+    }
+    
+    func isNotStartingWord(word: String) -> Bool {
+        return word != rootWord
+    }
+    
     func wordError(title: String, message: String) {
         errorTitle = title
         errorMessage = message
         showingError = true
+    }
+    
+    func newGame() {
+        newWord = ""
+        usedWords = []
+        startGame()
     }
 }
 
