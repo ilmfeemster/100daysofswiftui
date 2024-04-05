@@ -29,6 +29,8 @@ struct ContentView: View {
     @State private var selectedCountry = ""
     @State private var alertMessage = ""
     @State private var round = 1
+    @State private var animationAmount = 0.0
+    
     var body: some View {
         ZStack {
             RadialGradient(stops: [
@@ -57,6 +59,7 @@ struct ContentView: View {
                         } label: {
                             FlagView(country: countries[number])
                         }
+                        .rotation3DEffect(.degrees(number == correctAnswer ? self.animationAmount : 0), axis: (x: 0.0, y: 1.0, z: 0.0))
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -93,6 +96,9 @@ struct ContentView: View {
             score += 1
             scoreTitle = "Correct"
             alertMessage = "Your score is \(score)"
+            withAnimation{
+                animationAmount += 360
+            }
         } else {
             score -= 1
             scoreTitle = "Wrong"
