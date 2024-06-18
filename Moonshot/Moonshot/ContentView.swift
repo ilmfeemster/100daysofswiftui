@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
-    let missions: [String: Mission] = Bundle.main.decode("missions.json")
+    let missions: [Mission] = Bundle.main.decode("missions.json")
     
     let columns = [
         GridItem(.adaptive(minimum: 150))
